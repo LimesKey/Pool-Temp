@@ -10,13 +10,13 @@ city_name = str(input("What City or Town do you live in?\n")).lower()
 country_name = str(input("What country do you live in?\n")).upper()
 preferred_temp = input("What is your preferred pool temperature?\nCold \nNormal \nWarm \n").lower()
 time2 = time.strftime("%X", time.localtime())  # get time
-api_key = "baad0e96d75cca8f793a94da267ab771"
+api_key = ""
 api_calls = 0
 
 swim_or_not = False
 
-if city_name == "milton,CA":
-    city_name = "toronto"
+if city_name == "milton":
+    city_name = "burlington"
 
 
 def get_weather(city_name, country_name, api_key):
@@ -37,9 +37,10 @@ def get_weather(city_name, country_name, api_key):
     humidity = str('"' + str(humidity) + '%"')
     print('This is the humidity is ' + str(humidity))
 
-    current_weather = response['weather']['id']
-    if current_weather == '801' or '802' or '800':  # good weather for swimming
-        swim_or_not: bool = True
+    for item2 in response['weather']:
+        current_weather = item2['id']
+        if current_weather == '801' or '802' or '800':  # good weather for swimming
+            swim_or_not: bool = True
 
     try:
         warning = response['alerts']
@@ -51,17 +52,12 @@ def get_weather(city_name, country_name, api_key):
 def get_forcast(city_name, country_name, api_key):
     url2 = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_name}&appid={api_key}&units=metric"
     response2 = requests.get(url2).json()
-    print(response2)
     for item in response2['list']:
-        response2 = requests.get(url2).json()
-        print(response2)
-        feels_like_4_hour = round(response2(item['main']['feels_like']))
+        feels_like_4_hour = round(item['main']['feels_like'])
 
 
-get_forcast(city_name, country_name, api_key)
-get_weather(api_key, city_name)
-# try:
-#     get_forcast(city_name, country_name, api_key)
-#     get_weather(api_key, city_name)
-# except TypeError:
-#     print('TypeError')
+try:
+    get_forcast(city_name, country_name, api_key)
+    get_weather(city_name, country_name, api_key)
+except TypeError:
+    print('TypeError')
