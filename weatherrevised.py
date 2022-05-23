@@ -21,7 +21,7 @@ while preferred_temp != 'normal' or 'cold' != preferred_temp or 'warm' != prefer
         print("You have not selected the correct value")
 
 time2 = time.strftime("%X", time.localtime())  # get time
-api_key = "1ff31b804bfc0c360c604ff7f9265a83"
+api_key = ""
 api_calls = 0
 
 swim_or_not = False
