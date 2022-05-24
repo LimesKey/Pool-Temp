@@ -9,6 +9,9 @@ print("This program is for finding the best pool temperature to set your heater 
 city_name = str(input("What City or Town do you live in?\n")).lower()
 country_name = str(input("What country do you live in?\n")).upper()
 preferred_temp = ""
+pool_temp_normal = 80
+pool_temp_warm = 84  # starting values for pool calcuator temp
+pool_temp_cold = 78
 # if country_name.upper() == 'CANADA':
 # country_name = 'CA'
 # if country_name.upper() == 'AMERICA' or 'UNITED STATES' or 'UNITED STATES OF AMERICA' or 'UNITED STATE':
@@ -63,14 +66,17 @@ def get_weather(city_name, country_name, api_key):
 def get_forcast(city_name, country_name, api_key):
     url2 = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_name}&appid={api_key}&units=metric"
     response2 = requests.get(url2).json()
-    for item in response2['list']:
-        feels_like_4_hour = round(item['main']['feels_like'])
+    print(response2)
+    feels_like_3_hour = round(response2['list'][0]["main"]["feels_like"])
+    print(feels_like_3_hour)
+
 
 try:
     get_forcast(city_name, country_name, api_key)
     get_weather(city_name, country_name, api_key)
 except TypeError:
     print('Sorry something went wrong, error code: TypeError')
+
 
 # for actually deciding what pool temp to set the heater at
 
