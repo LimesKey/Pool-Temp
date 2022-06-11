@@ -12,7 +12,7 @@ api_key = input("What's your ApiKey for OpenWeatherMap?\n").lower()
 
 time2 = time.strftime("%X", time.localtime())  # get time
 if api_key == '':
-    api_key = ""
+    api_key = "1ff31b804bfc0c360c604ff7f9265a83"
 
 swim_or_not = False
 pool_temp_normal = 29
@@ -24,6 +24,8 @@ if city_name == "milton":
 def get_weather(city_name, country_name, api_key):
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}, {country_name}&appid={api_key}&units=metric"
     response = requests.get(url).json()
+    while 'cod' in response and response['cod'] == '401':
+        api_key = input('Your API Key was incorrect, please enter it again. You may need to wait a few hours for it to activate.').lower()
     if 'cod' in response and response['cod'] == '404':
         print('You can get this error when you specified the wrong city name, ZIP-code or city ID. For your '
               'reference, this list contains City name, City ID, Geographical coordinates of the city (lon, lat), '
@@ -46,8 +48,7 @@ def get_weather(city_name, country_name, api_key):
         feels_like = round(feels_like)
         print(f"This is feels like {feels_like}.")
 
-        humidity = response['main']['humidity']
-        humidity = round(humidity)
+        humidity = round(response["main"]["humidity"])
         print(f'The humidity is {humidity}%.')
 
         global partial_swim
@@ -55,7 +56,7 @@ def get_weather(city_name, country_name, api_key):
 
         for item2 in response['weather']:
             current_weather = item2['id']
-            if current_weather == '801' or '802' or '800':  # good weather for swimming
+            if current_weather in [801, 802, 800]:  # good weather for swimming
                 partial_swim = False
             else:
                 partial_swim = True
@@ -66,6 +67,7 @@ def get_weather(city_name, country_name, api_key):
             swim_or_not = True
         except KeyError:
             pass
+
         if current_temp < 10:
             partial_swim = True
         if current_temp < 0:
@@ -78,9 +80,7 @@ def get_forcast(city_name, country_name, api_key):
     url2 = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_name}&appid={api_key}&units=metric"
     response2 = requests.get(url2).json()
     print(response2)
-    if 'cod' in response2 and response2['cod'] == '404':
-        pass
-    else:
+    if 'cod' not in response2:
         global feels_like_3_hour
         feels_like_3_hour = round(response2['list'][0]["main"]["feels_like"])
         print(f'The air temp in 3 hours will be {feels_like_3_hour}c')
@@ -88,12 +88,13 @@ def get_forcast(city_name, country_name, api_key):
         humidity_in_3_hour = round(response2['list'][0]['main']['humidity'])
         print(f'The humidity in 3 hours will be {humidity_in_3_hour}.')
 
-
 try:
     get_forcast(city_name, country_name, api_key)
     get_weather(city_name, country_name, api_key)
 except TypeError:
     print(f'Sorry something went wrong, error code: {TypeError}')
+except KeyError:
+    print(f'Sorry something went wrong, error code {TypeError}.')
 
 
 # for actually deciding what pool temp to set the heater at
@@ -118,6 +119,7 @@ try:
     calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_temp_normal, humidity_in_3_hour, swim_or_not, partial_swim)
 except TypeError:
     print(f'Sorry something went wrong, error code: {TypeError}')
+
 if units == 'F':
     pool_temp_normal *= 1.8 + 32
 
