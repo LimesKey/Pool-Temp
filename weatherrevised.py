@@ -70,6 +70,8 @@ def get_weather(city_name, country_name, api_key):
             partial_swim = True
         if current_temp < 0:
             swim_or_not = True
+        if humidity > 90:
+            partial_swim = True
 
 
 def get_forcast(city_name, country_name, api_key):
@@ -125,5 +127,5 @@ if swim_or_not:
 elif partial_swim:
     print(f'Your suggested pool heater temperature is {pool_temp_normal}{units} but I wouldn\'t recommend you to swim at this time.')
 else:
-    print(f'Your suggested pool heater temperature is {pool_temp_normal}{units}. There where no weather concerns in '
+    print(f'Your suggested pool heater temperature is {pool_temp_normal}{units}, there where no weather concerns in '
           f'your area.')
