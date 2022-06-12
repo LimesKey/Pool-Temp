@@ -1,6 +1,8 @@
 import requests
 import math
 import time
+import datetime
+
 
 # intro
 print("This program is for finding the best pool temperature to set your heater at to save the most amount of money "
@@ -10,7 +12,7 @@ city_name = str(input("What City or Town do you live in?\n")).lower()
 country_name = str(input("What country do you live in?\n")).upper()
 api_key = input("What's your ApiKey for OpenWeatherMap?\n").lower()
 
-time2 = time.strftime("%X", time.localtime())  # get time
+time2 = time.strftime("%H%M", time.localtime())  # get time
 if api_key == '':
     api_key = "1ff31b804bfc0c360c604ff7f9265a83"
 
@@ -37,10 +39,15 @@ def get_weather(city_name, country_name, api_key):
         global current_weather
         global swim_or_not
         global units
+        global sunset
+        global sunset_unix
         if response['sys']['country'] == 'US':
             units = 'F'
         else:
             units = 'C'
+        sunset_unix = response['sys']['sunset']
+        sunset = time.strftime("%I:%M %p", time.localtime(int(sunset_unix)))  # %I is for 24 hour time, %p is for AM/PM time
+        sunset = sunset.lstrip('0')  # strips the 0 in front of the hour
         current_temp = round(response['main']['temp'])  # get temp
         print(f'The current temp is {current_temp}.')
 
@@ -79,14 +86,15 @@ def get_weather(city_name, country_name, api_key):
 def get_forcast(city_name, country_name, api_key):
     url2 = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name},{country_name}&appid={api_key}&units=metric"
     response2 = requests.get(url2).json()
-    print(response2)
-    if 'cod' not in response2:
+    if 'cod' in response2 and response2['cod'] != '404' or '404':
         global feels_like_3_hour
         feels_like_3_hour = round(response2['list'][0]["main"]["feels_like"])
         print(f'The air temp in 3 hours will be {feels_like_3_hour}c')
         global humidity_in_3_hour
         humidity_in_3_hour = round(response2['list'][0]['main']['humidity'])
         print(f'The humidity in 3 hours will be {humidity_in_3_hour}.')
+    else:
+        print('party')
 
 try:
     get_forcast(city_name, country_name, api_key)
@@ -98,12 +106,11 @@ except KeyError:
 
 
 # for actually deciding what pool temp to set the heater at
-def calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_temp_normal, humidity_in_3_hour, swim_or_not, partial_swim):
+def calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_temp_normal, humidity_in_3_hour, swim_or_not, partial_swim, sunset, sunset_unix):
     if units == 'F':
         current_temp *= 1.8 + 32
         feels_like *= 1.8 + 32
         feels_like_3_hour *= 1.8 + 32
-
     if feels_like_3_hour > current_temp and humidity_in_3_hour < humidity:
         pool_temp_normal += 0
 
@@ -113,10 +120,16 @@ def calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_t
     if feels_like_3_hour < current_temp and humidity > humidity_in_3_hour:
         pool_temp_normal += 1
         partial_swim = True
+    calcuate_sunrise_comparison2 = time.strftime("%H%M", time.localtime(sunset_unix))
+    global atnighttrue
+    global atnight
+    if time2 > calcuate_sunrise_comparison2:
+        atnight = 'Its currently dark outside so I wouldn\'t recommend swimming'
+        atnighttrue = True
 
 
 try:
-    calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_temp_normal, humidity_in_3_hour, swim_or_not, partial_swim)
+    calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_temp_normal, humidity_in_3_hour, swim_or_not, partial_swim, sunset, sunset_unix)
 except TypeError:
     print(f'Sorry something went wrong, error code: {TypeError}')
 
@@ -127,7 +140,10 @@ if swim_or_not:
     print(f"I cannot give you a temperature to set your pool heater at because of dangerous weather concerns in your area. The "
           f"weather concern is {warning}.")
 elif partial_swim:
-    print(f'Your suggested pool heater temperature is {pool_temp_normal}{units} but I wouldn\'t recommend you to swim at this time.')
+    if atnighttrue:
+        print(f'Your suggested pool heater temperature is {pool_temp_normal}{units} but {atnight}.')
+    else:
+        print(f'Your suggested pool heater temperature is {pool_temp_normal}{units}, but I wouldn\'t recommend you to swim at this time.')
 else:
     print(f'Your suggested pool heater temperature is {pool_temp_normal}{units}, there where no weather concerns in '
           f'your area.')
