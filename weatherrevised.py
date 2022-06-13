@@ -121,15 +121,16 @@ def calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_t
         pool_temp_normal += 1
         partial_swim = True
     calcuate_sunrise_comparison2 = time.strftime("%H%M", time.localtime(sunset_unix))
-    global atnighttrue
-    global atnight
+    atnighttrue = False
+    atnight = ''
     if time2 > calcuate_sunrise_comparison2:
         atnight = 'Its currently dark outside so I wouldn\'t recommend swimming'
         atnighttrue = True
+    return atnighttrue, atnight
 
 
 try:
-    calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_temp_normal, humidity_in_3_hour, swim_or_not, partial_swim, sunset, sunset_unix)
+    atnighttrue, atnight = calculate_temp(current_temp, humidity, feels_like_3_hour, feels_like, pool_temp_normal, humidity_in_3_hour, swim_or_not, partial_swim, sunset, sunset_unix)
 except TypeError:
     print(f'Sorry something went wrong, error code: {TypeError}')
 
