@@ -14,7 +14,7 @@ api_key = input("What's your ApiKey for OpenWeatherMap?\n").lower()
 
 time2 = time.strftime("%H%M", time.localtime())  # get time
 if api_key == '':
-    api_key = "1ff31b804bfc0c360c604ff7f9265a83"
+    api_key = ""
 
 swim_or_not = False
 pool_temp_normal = 29
