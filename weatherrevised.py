@@ -1,3 +1,4 @@
+from typing import Any
 import requests
 import time
 
@@ -11,29 +12,29 @@ print(
     )
 )
 
-city_name = input("What City or Town do you live in?\n").lower()
-country_name = input("What country do you live in?\n").upper()
-api_key = input("What's your ApiKey for OpenWeatherMap?\n").lower()
+city_name: str = input("What City or Town do you live in?\n").lower()
+country_name: str = input("What country do you live in?\n").upper()
+api_key: str = input("What's your ApiKey for OpenWeatherMap?\n").lower()
 
-time2 = time.strftime("%H%M", time.localtime())  # get time
+time2: str = time.strftime("%H%M", time.localtime())  # get time
 if api_key == "":
     api_key = ""
 
-swim_or_not = False
-pool_temp_normal = 29
+swim_or_not: bool = False
+pool_temp_normal: int = 29
 
 if city_name == "milton":
     city_name = "Oakville"
 
 
 def get_weather(city_name, country_name, api_key):
-    url = (
+    url: str = (
             "https://api.openweathermap.org/data/2.5/weather"
             f"?q={city_name}, {country_name}&appid={api_key}&units=metric"
         )
-    response = requests.get(url).json()
+    response: dict[str | Any] = requests.get(url).json()
     while "cod" in response and response["cod"] == "401":
-        api_key = input(
+        api_key: str = input(
                 (
                     "Your API Key was incorrect, please enter it again. "
                     "You may need to wait a few hours for it to activate."
@@ -58,27 +59,27 @@ def get_weather(city_name, country_name, api_key):
         global sunset
         global sunset_unix
         if response["sys"]["country"] == "US":
-            units = "F"
+            units: str = "F"
         else:
             units = "C"
-        sunset_unix = response["sys"]["sunset"]
-        sunset = time.strftime("%I:%M %p", time.localtime(int(sunset_unix)))  # %I is for 24 hour time, %p is for AM/PM time
-        sunset = sunset.lstrip("0")  # strips the 0 in front of the hour
-        current_temp = round(response["main"]["temp"])  # get temp
+        sunset_unix: str = response["sys"]["sunset"]
+        sunset: str = time.strftime("%I:%M %p", time.localtime(int(sunset_unix)))  # %I is for 24 hour time, %p is for AM/PM time
+        sunset: str = sunset.lstrip("0")  # strips the 0 in front of the hour
+        current_temp: int = round(response["main"]["temp"])  # get temp
         print(f"The current temp is {current_temp}.")
 
-        feels_like = response["main"]["feels_like"]  # get feel like
-        feels_like = round(feels_like)
+        feels_like: int = response["main"]["feels_like"]  # get feel like
+        feels_like: int = round(feels_like)
         print(f"This is feels like {feels_like}.")
 
-        humidity = round(response["main"]["humidity"])
+        humidity: int = round(response["main"]["humidity"])
         print(f"The humidity is {humidity}%.")
 
         global partial_swim
-        partial_swim = False
+        partial_swim: bool = False
 
         for item2 in response["weather"]:
-            current_weather = item2["id"]
+            current_weather: int = item2["id"]
             if current_weather in [801, 802, 800]:  # good weather for swimming
                 partial_swim = False
             else:
@@ -86,31 +87,31 @@ def get_weather(city_name, country_name, api_key):
 
         global warning
         try:
-            warning = response["alerts"]
-            swim_or_not = True
+            warning: str = response["alerts"]
+            swim_or_not: bool = True
         except KeyError:
             pass
 
         if current_temp < 10:
             partial_swim = True
         if current_temp < 0:
-            swim_or_not = True
+            swim_or_not: bool = True
         if humidity > 90:
             partial_swim = True
 
 
 def get_forcast(city_name, country_name, api_key):
-    url2 = (
+    url2: str = (
             "https://api.openweathermap.org/data/2.5/forecast"
             f"?q={city_name},{country_name}&appid={api_key}&units=metric"
         )
-    response2 = requests.get(url2).json()
+    response2: dict[str | Any] = requests.get(url2).json()
     if "cod" in response2 and response2["cod"] != "404" or "404":
         global feels_like_3_hour
-        feels_like_3_hour = round(response2["list"][0]["main"]["feels_like"])
+        feels_like_3_hour: int = round(response2["list"][0]["main"]["feels_like"])
         print(f"The air temp in 3 hours will be {feels_like_3_hour}c")
         global humidity_in_3_hour
-        humidity_in_3_hour = round(response2["list"][0]["main"]["humidity"])
+        humidity_in_3_hour: int = round(response2["list"][0]["main"]["humidity"])
         print(f"The humidity in 3 hours will be {humidity_in_3_hour}.")
     else:
         print("party")
