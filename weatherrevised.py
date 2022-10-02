@@ -17,8 +17,6 @@ country_name: str = input("What country do you live in?\n").upper()
 api_key: str = input("What's your ApiKey for OpenWeatherMap?\n").lower()
 
 time2: str = time.strftime("%H%M", time.localtime())  # get time
-if api_key == "":
-    api_key = ""
 
 swim_or_not: bool = False
 pool_temp_normal: int = 29
@@ -133,8 +131,6 @@ def calculate_temp(
         feels_like,
         pool_temp_normal,
         humidity_in_3_hour,
-        swim_or_not, partial_swim,
-        sunset,
         sunset_unix
     ):
     if units == "F":
