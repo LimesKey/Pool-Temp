@@ -25,7 +25,11 @@ if city_name == "milton":
     city_name = "Oakville"
 
 
-def get_weather(city_name, country_name, api_key):
+def get_weather(
+        city_name: str,
+        country_name: str,
+        api_key: str
+    ) -> None:
     url: str = (
             "https://api.openweathermap.org/data/2.5/weather"
             f"?q={city_name}, {country_name}&appid={api_key}&units=metric"
@@ -98,7 +102,11 @@ def get_weather(city_name, country_name, api_key):
             partial_swim = True
 
 
-def get_forcast(city_name, country_name, api_key):
+def get_forcast(
+        city_name: str,
+        country_name: str,
+        api_key: str
+    ) -> None:
     url2: str = (
             "https://api.openweathermap.org/data/2.5/forecast"
             f"?q={city_name},{country_name}&appid={api_key}&units=metric"
@@ -125,14 +133,14 @@ except KeyError:
 
 # for actually deciding what pool temp to set the heater at
 def calculate_temp(
-        current_temp,
-        humidity,
-        feels_like_3_hour,
-        feels_like,
-        pool_temp_normal,
-        humidity_in_3_hour,
-        sunset_unix
-    ):
+        current_temp: int,
+        humidity: int,
+        feels_like_3_hour: int,
+        feels_like: int,
+        pool_temp_normal: int,
+        humidity_in_3_hour: int,
+        sunset_unix: float | int
+    ) -> tuple[bool, str]:
     if units == "F":
         current_temp *= 1.8 + 32
         feels_like *= 1.8 + 32
