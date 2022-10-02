@@ -11,8 +11,8 @@ print(
     )
 )
 
-city_name = str(input("What City or Town do you live in?\n")).lower()
-country_name = str(input("What country do you live in?\n")).upper()
+city_name = input("What City or Town do you live in?\n").lower()
+country_name = input("What country do you live in?\n").upper()
 api_key = input("What's your ApiKey for OpenWeatherMap?\n").lower()
 
 time2 = time.strftime("%H%M", time.localtime())  # get time
