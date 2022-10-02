@@ -1,6 +1,6 @@
 from typing import Any
-import requests
-import time
+from time import strftime, localtime
+from requests import get
 
 
 # intro
@@ -16,7 +16,7 @@ city_name: str = input("What City or Town do you live in?\n").lower()
 country_name: str = input("What country do you live in?\n").upper()
 api_key: str = input("What's your ApiKey for OpenWeatherMap?\n").lower()
 
-time2: str = time.strftime("%H%M", time.localtime())  # get time
+time2: str = strftime("%H%M", localtime())  # get time
 
 swim_or_not: bool = False
 pool_temp_normal: int = 29
@@ -30,7 +30,7 @@ def get_weather(city_name, country_name, api_key):
             "https://api.openweathermap.org/data/2.5/weather"
             f"?q={city_name}, {country_name}&appid={api_key}&units=metric"
         )
-    response: dict[str | Any] = requests.get(url).json()
+    response: dict[str | Any] = get(url).json()
     while "cod" in response and response["cod"] == "401":
         api_key: str = input(
                 (
@@ -61,7 +61,7 @@ def get_weather(city_name, country_name, api_key):
         else:
             units = "C"
         sunset_unix: str = response["sys"]["sunset"]
-        sunset: str = time.strftime("%I:%M %p", time.localtime(int(sunset_unix)))  # %I is for 24 hour time, %p is for AM/PM time
+        sunset: str = strftime("%I:%M %p", localtime(int(sunset_unix)))  # %I is for 24 hour time, %p is for AM/PM time
         sunset: str = sunset.lstrip("0")  # strips the 0 in front of the hour
         current_temp: int = round(response["main"]["temp"])  # get temp
         print(f"The current temp is {current_temp}.")
@@ -103,7 +103,7 @@ def get_forcast(city_name, country_name, api_key):
             "https://api.openweathermap.org/data/2.5/forecast"
             f"?q={city_name},{country_name}&appid={api_key}&units=metric"
         )
-    response2: dict[str | Any] = requests.get(url2).json()
+    response2: dict[str | Any] = get(url2).json()
     if "cod" in response2 and response2["cod"] != "404" or "404":
         global feels_like_3_hour
         feels_like_3_hour: int = round(response2["list"][0]["main"]["feels_like"])
@@ -146,8 +146,8 @@ def calculate_temp(
     if feels_like_3_hour < current_temp and humidity > humidity_in_3_hour:
         pool_temp_normal += 1
         partial_swim = True
-    calcuate_sunrise_comparison2 = time.strftime(
-            "%H%M", time.localtime(sunset_unix)
+    calcuate_sunrise_comparison2 = strftime(
+            "%H%M", localtime(sunset_unix)
         )
     atnighttrue = False
     atnight = ""
@@ -196,7 +196,7 @@ elif partial_swim:
         print(
             "Your suggested pool heater temperature is "
             f"{pool_temp_normal}{units}, but I wouldn't"
-            " recommend you to swim at this time."
+            " recommend you to swim at this "
         )
 else:
     print(
