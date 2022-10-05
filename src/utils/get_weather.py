@@ -20,7 +20,7 @@ def get_weather(
         str,
         str,
         bool
-    ]:
+    ] | None:
     # include documentation
 
     url: str = (
@@ -29,72 +29,75 @@ def get_weather(
         )
 
     response: Any = get(url).json()
-    while "cod" in response and response["cod"] == "401":
-        api_key = input(
+    for _ in range(3):
+        if "cod" in response and response["cod"] == "401":
+            api_key = input(
+                    (
+                        "Your API Key was incorrect, please enter it again. "
+                        "You may need to wait a few hours for it to activate."
+                    )
+                ).lower()
+        elif "cod" in response and response["cod"] == "404":
+            print(
                 (
-                    "Your API Key was incorrect, please enter it again. "
-                    "You may need to wait a few hours for it to activate."
+                    "You can get this error when you specified the wrong city"
+                    " name, ZIP-code or city ID. For your reference, this list"
+                    " contains City name, City ID, Geographical coordinates"
+                    " of the city (lon, lat), Zoom, etc. We are sorry."
                 )
-            ).lower()
-
-    if "cod" in response and response["cod"] == "404":
-        print(
-            (
-                "You can get this error when you specified the wrong "
-                "city name, ZIP-code or city ID. For your reference, this"
-                " list contains City name, City ID, Geographical "
-                "coordinates of the city (lon, lat), Zoom, etc. We are sorry."
             )
-        )
-    else:
-
-        if response["sys"]["country"].lower() == "US":
-            units: str = "F"
         else:
-            units = "C"
+            break
 
-        sunset_unix: str = response["sys"]["sunset"]
+        return None
 
-        # %I is for 24 hour time, %p is for AM/PM time
-        sunset: str = strftime(
-                "%I:%M %p", localtime(int(sunset_unix))
-            ).lstrip("0")
-        current_temp: int = round(response["main"]["temp"])
+    if response["sys"]["country"].lower() == "US":
+        units: str = "F"
+    else:
+        units = "C"
 
-        feels_like: int = response["main"]["feels_like"]  # get feel like
-        feels_like = round(feels_like)
+    sunset_unix: str = response["sys"]["sunset"]
 
-        humidity: int = round(response["main"]["humidity"])
+    # %I is for 24 hour time, %p is for AM/PM time
+    sunset: str = strftime(
+            "%I:%M %p", localtime(int(sunset_unix))
+        ).lstrip("0")
+    current_temp: int = round(response["main"]["temp"])
 
-        partial_swim: bool = False
+    feels_like: int = response["main"]["feels_like"]  # get feel like
+    feels_like = round(feels_like)
 
-        for item2 in response["weather"]:
-            current_weather: int = item2["id"]
-            if current_weather in [801, 802, 800]:  # good weather for swimming
-                partial_swim = False
-            else:
-                partial_swim = True
+    humidity: int = round(response["main"]["humidity"])
 
-        print(
-            (
-                f"The current temp is {current_temp}."
-                f"\nThis is feels like {feels_like}."
-                f"\nThe humidity is {humidity}%."
-            )
+    partial_swim: bool = False
+
+    for item2 in response["weather"]:
+        current_weather: int = item2["id"]
+        if current_weather in [801, 802, 800]:  # good weather for swimming
+            partial_swim = False
+        else:
+            partial_swim = True
+
+    print(
+        (
+            f"The current temp is {current_temp}."
+            f"\nThis is feels like {feels_like}."
+            f"\nThe humidity is {humidity}%."
         )
+    )
 
-        try:
-            warning: str = response["alerts"]
-            swim_or_not: bool = True
-        except KeyError:
-            pass
+    try:
+        warning: str = response["alerts"]
+        swim_or_not: bool = True
+    except KeyError:
+        pass
 
-        if current_temp < 10:
-            partial_swim = True
-        elif current_temp < 0:
-            swim_or_not = True
-        elif humidity > 90:
-            partial_swim = True
+    if current_temp < 10:
+        partial_swim = True
+    elif current_temp < 0:
+        swim_or_not = True
+    elif humidity > 90:
+        partial_swim = True
 
     return (
         current_temp,
