@@ -1,5 +1,5 @@
 from time import localtime, strftime
-from typing import Any
+from typing import Any, NoReturn
 
 from requests import get
 
@@ -20,7 +20,7 @@ def get_weather(
         str,
         str,
         bool
-    ] | None:
+    ]:
     # include documentation
 
     url: str = (
@@ -30,26 +30,31 @@ def get_weather(
 
     response: Any = get(url).json()
     for _ in range(3):
-        if "cod" in response and response["cod"] == "401":
-            api_key = input(
+        try:
+            if "cod" in response and response["cod"] == "401":
+                api_key = input(
+                        (
+                            "Your API Key was incorrect, please "
+                            "enter it again. You may need to wait"
+                            " a few hours for it to activate."
+                        )
+                    ).lower()
+            elif "cod" in response and response["cod"] == "404":
+                print(
                     (
-                        "Your API Key was incorrect, please enter it again. "
-                        "You may need to wait a few hours for it to activate."
+                        "You can get this error when you specified the "
+                        "wrong city name, ZIP-code or city ID. For your"
+                        " reference this list contains City name, City "
+                        "ID, Geographical coordinates of the city (lon,"
+                        " lat), Zoom, etc. We are sorry."
                     )
-                ).lower()
-        elif "cod" in response and response["cod"] == "404":
-            print(
-                (
-                    "You can get this error when you specified the wrong city"
-                    " name, ZIP-code or city ID. For your reference, this list"
-                    " contains City name, City ID, Geographical coordinates"
-                    " of the city (lon, lat), Zoom, etc. We are sorry."
                 )
-            )
-        else:
-            break
+            else:
+                break
+        except (ConnectionError, ConnectionRefusedError):
+            continue
 
-        return None
+        raise SystemExit
 
     if response["sys"]["country"].lower() == "US":
         units: str = "F"
