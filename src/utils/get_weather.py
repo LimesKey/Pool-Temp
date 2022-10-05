@@ -64,7 +64,6 @@ def get_weather(
     feels_like: int = response["main"]["feels_like"]  # get feel like
     feels_like = round(feels_like)
     humidity: int = round(response["main"]["humidity"])
-
     partial_swim: bool = False
 
     for item2 in response["weather"]:
@@ -83,7 +82,7 @@ def get_weather(
     if current_temp < 10:
         partial_swim = True
     elif current_temp < 0:
-        swim_or_not = True
+        swim_or_not = False
     elif humidity > 90:
         partial_swim = True
 
