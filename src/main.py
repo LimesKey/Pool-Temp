@@ -27,37 +27,37 @@ def main() -> None:
     if city_name == "milton":
         city_name = "Oakville"
 
-
-
-
     try:
-        get_forcast(city_name, country_name, api_key)
-        get_weather(city_name, country_name, api_key)
+        (
+            feels_like_3_hour,
+            humidity_in_3_hour
+        ) = get_forcast(city_name, country_name, api_key)
+        (
+            current_temp,
+            feels_like,
+            humidity,
+            current_temp,
+            swim_or_not,
+            units,
+            sunset_unix,
+            warning,
+            partial_swim
+        ) = get_weather(city_name, country_name, api_key)
+        atnighttrue, atnight = calculate_temp(
+                time2,
+                units,
+                current_temp,
+                humidity,
+                feels_like,
+                feels_like_3_hour,
+                pool_temp_normal,
+                humidity_in_3_hour,
+                sunset_unix
+            )
     except TypeError as Err:
         print(f"Sorry something went wrong, error code: {Err}")
     except KeyError as Err:
         print(f"Sorry something went wrong, error code {Err}.")
-
-
-    # for actually deciding what pool temp to set the heater at
-
-
-
-    try:
-        atnighttrue, atnight = calculate_temp(
-                current_temp,
-                humidity,
-                feels_like_3_hour,
-                feels_like,
-                pool_temp_normal,
-                humidity_in_3_hour,
-                swim_or_not,
-                partial_swim,
-                sunset,
-                sunset_unix
-            )
-    except TypeError:
-        print(f"Sorry something went wrong, error code: {TypeError}")
 
     if units == "F":
         pool_temp_normal *= 1.8 + 32
