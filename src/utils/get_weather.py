@@ -9,11 +9,14 @@ def get_weather(
         country_name: str,
         api_key: str
     ) -> None:
+    # include documentation
+
     url: str = (
             "https://api.openweathermap.org/data/2.5/weather"
             f"?q={city_name}, {country_name}&appid={api_key}&units=metric"
         )
-    response: dict[str | Any] = get(url).json()
+
+    response: Any = get(url).json()
     while "cod" in response and response["cod"] == "401":
         api_key: str = input(
                 (
@@ -21,6 +24,7 @@ def get_weather(
                     "You may need to wait a few hours for it to activate."
                 )
             ).lower()
+
     if "cod" in response and response["cod"] == "404":
         print(
             (
@@ -31,32 +35,25 @@ def get_weather(
             )
         )
     else:
-        global current_temp
-        global feels_like
-        global humidity
-        global current_weather
-        global swim_or_not
-        global units
-        global sunset
-        global sunset_unix
-        if response["sys"]["country"] == "US":
+
+        if response["sys"]["country"].lower() == "US":
             units: str = "F"
         else:
             units = "C"
+
         sunset_unix: str = response["sys"]["sunset"]
-        sunset: str = strftime("%I:%M %p", localtime(int(sunset_unix)))  # %I is for 24 hour time, %p is for AM/PM time
-        sunset: str = sunset.lstrip("0")  # strips the 0 in front of the hour
-        current_temp: int = round(response["main"]["temp"])  # get temp
-        print(f"The current temp is {current_temp}.")
+
+        # %I is for 24 hour time, %p is for AM/PM time
+        sunset: str = strftime(
+                "%I:%M %p", localtime(int(sunset_unix))
+            ).lstrip("0")
+        current_temp: int = round(response["main"]["temp"])
 
         feels_like: int = response["main"]["feels_like"]  # get feel like
         feels_like: int = round(feels_like)
-        print(f"This is feels like {feels_like}.")
 
         humidity: int = round(response["main"]["humidity"])
-        print(f"The humidity is {humidity}%.")
 
-        global partial_swim
         partial_swim: bool = False
 
         for item2 in response["weather"]:
@@ -66,7 +63,14 @@ def get_weather(
             else:
                 partial_swim = True
 
-        global warning
+        print(
+            (
+                f"The current temp is {current_temp}."
+                f"\nThis is feels like {feels_like}."
+                f"\nThe humidity is {humidity}%."
+            )
+        )
+
         try:
             warning: str = response["alerts"]
             swim_or_not: bool = True
@@ -79,3 +83,17 @@ def get_weather(
             swim_or_not: bool = True
         if humidity > 90:
             partial_swim = True
+
+    return (
+        current_temp,
+        feels_like,
+        humidity,
+        current_weather,
+        current_temp,
+        swim_or_not,
+        units,
+        sunset,
+        sunset_unix,
+        warning,
+        partial_swim
+    )
