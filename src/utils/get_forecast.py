@@ -17,7 +17,7 @@ def get_forcast(
     response2: Any = get(url2).json()
 
     if (
-            ("cod" in response2.lower())
+            ("cod" in response2)
             and (
                     (response2["cod"] != "404")
                     or (response2["cod"] == "404")
