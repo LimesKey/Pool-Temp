@@ -1,8 +1,8 @@
 from time import strftime, localtime
 
-from src.utils.calc_temp import calculate_temp
-from src.utils.get_forecast import get_forcast
-from src.utils.get_weather import get_weather
+from src.utils.calc_temp import calculate_temp # type: ignore
+from src.utils.get_forecast import get_forcast # type: ignore
+from src.utils.get_weather import get_weather # type: ignore
 
 
 def main() -> None:
@@ -22,7 +22,7 @@ def main() -> None:
     time2: str = strftime("%H%M", localtime())  # get time
 
     swim_or_not: bool = False
-    pool_temp_normal: int = 29
+    pool_temp_normal: float = 29.0
 
     if city_name == "milton":
         city_name = "Oakville"
