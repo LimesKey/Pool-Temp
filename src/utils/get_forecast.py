@@ -23,8 +23,12 @@ def get_forcast(
                     or (response2["cod"] == "404")
                 )
         ):
-        feels_like_3_hour: int = round(response2["list"][0]["main"]["feels_like"])
-        humidity_in_3_hour: int = round(response2["list"][0]["main"]["humidity"])
+        feels_like_3_hour: int = round(
+                response2["list"][0]["main"]["feels_like"]
+            )
+        humidity_in_3_hour: int = round(
+                response2["list"][0]["main"]["humidity"]
+            )
         print(
             (
                 f"The air temp in 3 hours will be {feels_like_3_hour}c\n"
