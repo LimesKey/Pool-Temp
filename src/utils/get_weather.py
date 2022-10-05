@@ -91,9 +91,9 @@ def get_weather(
 
         if current_temp < 10:
             partial_swim = True
-        if current_temp < 0:
+        elif current_temp < 0:
             swim_or_not = True
-        if humidity > 90:
+        elif humidity > 90:
             partial_swim = True
 
     return (
