@@ -1,5 +1,5 @@
 from time import localtime, strftime
-from typing import Any, NoReturn
+from typing import Any
 
 from requests import get
 
@@ -13,9 +13,7 @@ def get_weather(
         int,
         int,
         int,
-        int,
         bool,
-        str,
         str,
         str,
         str,
@@ -106,11 +104,9 @@ def get_weather(
         current_temp,
         feels_like,
         humidity,
-        current_weather,
         current_temp,
         swim_or_not,
         units,
-        sunset,
         sunset_unix,
         warning,
         partial_swim
