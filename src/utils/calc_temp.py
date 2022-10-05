@@ -2,12 +2,12 @@ from time import localtime, strftime
 
 
 def calculate_temp(
-        time2: int,
+        time2: str,
         units: str,
-        current_temp: int,
+        current_temp: float,
         humidity: int,
-        feels_like_3_hour: int,
-        feels_like: int,
+        feels_like: float,
+        feels_like_3_hour: float,
         pool_temp_normal: int,
         humidity_in_3_hour: int,
         sunset_unix: float | int

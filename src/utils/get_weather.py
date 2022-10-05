@@ -8,7 +8,19 @@ def get_weather(
         city_name: str,
         country_name: str,
         api_key: str
-    ) -> None:
+    ) -> tuple[
+        int,
+        int,
+        int,
+        int,
+        int,
+        bool,
+        str,
+        str,
+        str,
+        str,
+        bool
+    ]:
     # include documentation
 
     url: str = (
@@ -18,7 +30,7 @@ def get_weather(
 
     response: Any = get(url).json()
     while "cod" in response and response["cod"] == "401":
-        api_key: str = input(
+        api_key = input(
                 (
                     "Your API Key was incorrect, please enter it again. "
                     "You may need to wait a few hours for it to activate."
@@ -50,7 +62,7 @@ def get_weather(
         current_temp: int = round(response["main"]["temp"])
 
         feels_like: int = response["main"]["feels_like"]  # get feel like
-        feels_like: int = round(feels_like)
+        feels_like = round(feels_like)
 
         humidity: int = round(response["main"]["humidity"])
 
@@ -80,7 +92,7 @@ def get_weather(
         if current_temp < 10:
             partial_swim = True
         if current_temp < 0:
-            swim_or_not: bool = True
+            swim_or_not = True
         if humidity > 90:
             partial_swim = True
 

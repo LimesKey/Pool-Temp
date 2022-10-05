@@ -38,3 +38,4 @@ def get_forcast(
         return feels_like_3_hour, humidity_in_3_hour
 
     print("party")
+    return None
