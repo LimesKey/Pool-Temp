@@ -29,12 +29,6 @@ def get_forcast(
         humidity_in_3_hour: int = round(
                 response2["list"][0]["main"]["humidity"]
             )
-        print(
-            (
-                f"The air temp in 3 hours will be {feels_like_3_hour}c\n"
-                f"The humidity in 3 hours will be {humidity_in_3_hour}."
-            )
-        )
         return feels_like_3_hour, humidity_in_3_hour
 
     print("party")

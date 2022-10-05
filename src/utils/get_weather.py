@@ -79,14 +79,6 @@ def get_weather(
         else:
             partial_swim = True
 
-    print(
-        (
-            f"The current temp is {current_temp}."
-            f"\nThis is feels like {feels_like}."
-            f"\nThe humidity is {humidity}%."
-        )
-    )
-
     try:
         warning: str = response["alerts"]
         swim_or_not: bool = True
