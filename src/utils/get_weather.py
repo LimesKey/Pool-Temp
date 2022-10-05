@@ -60,16 +60,10 @@ def get_weather(
         units = "C"
 
     sunset_unix: str = response["sys"]["sunset"]
-    # %I is for 24 hour time, %p is for AM/PM time
-    sunset: str = strftime(
-            "%I:%M %p", localtime(int(sunset_unix))
-        ).lstrip("0")
-
     current_temp: int = round(response["main"]["temp"])
     feels_like: int = response["main"]["feels_like"]  # get feel like
     feels_like = round(feels_like)
     humidity: int = round(response["main"]["humidity"])
-
     partial_swim: bool = False
 
     for item2 in response["weather"]:
@@ -79,24 +73,16 @@ def get_weather(
         else:
             partial_swim = True
 
-    print(
-        (
-            f"The current temp is {current_temp}."
-            f"\nThis is feels like {feels_like}."
-            f"\nThe humidity is {humidity}%."
-        )
-    )
-
+    swim_or_not: bool = True
     try:
         warning: str = response["alerts"]
-        swim_or_not: bool = True
     except KeyError:
-        pass
+        warning: str = None
 
     if current_temp < 10:
         partial_swim = True
     elif current_temp < 0:
-        swim_or_not = True
+        swim_or_not = False
     elif humidity > 90:
         partial_swim = True
 

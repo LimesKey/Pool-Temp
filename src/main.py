@@ -71,6 +71,18 @@ def main() -> None:
         if units.lower() == "F":
             pool_temp_normal *= 1.8 + 32
 
+        print(
+            (
+                f"The current temp is {current_temp}."
+                f"\nThis is feels like {feels_like}."
+                f"\nThe humidity is {humidity}%."
+                "The air temp in 3 hours will be"
+                f"{feels_like_3_hour}c\n"
+                "The humidity in 3 hours will"
+                f"be {humidity_in_3_hour}."
+            )
+        )
+
         if swim_or_not:
             print(
                 (
