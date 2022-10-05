@@ -31,7 +31,12 @@ def main() -> None:
         (
             feels_like_3_hour,
             humidity_in_3_hour
-        ) = get_forcast(city_name, country_name, api_key)
+        ) = get_forcast(
+                city_name,
+                country_name,
+                api_key
+            )
+
         (
             current_temp,
             feels_like,
@@ -42,7 +47,11 @@ def main() -> None:
             sunset_unix,
             warning,
             partial_swim
-        ) = get_weather(city_name, country_name, api_key)
+        ) = get_weather(
+                city_name,
+                country_name,
+                api_key
+            )
         atnighttrue, atnight = calculate_temp(
                 time2,
                 units,
@@ -58,36 +67,36 @@ def main() -> None:
         print(f"Sorry something went wrong, error code: {Err}")
     except KeyError as Err:
         print(f"Sorry something went wrong, error code {Err}.")
+    else:
+        if units.lower() == "F":
+            pool_temp_normal *= 1.8 + 32
 
-    if units == "F":
-        pool_temp_normal *= 1.8 + 32
-
-    if swim_or_not:
-        print(
-            (
-                "I cannot give you a temperature to set your pool"
-                " heater at because of dangerous weather concerns "
-                f"in your area. The weather concern is {warning}."
-            )
-        )
-    elif partial_swim:
-        if atnighttrue:
+        if swim_or_not:
             print(
-                "Your suggested pool heater temperature "
-                f"is {pool_temp_normal}{units} but {atnight}."
+                (
+                    "I cannot give you a temperature to set your pool"
+                    " heater at because of dangerous weather concerns "
+                    f"in your area. The weather concern is {warning}."
+                )
             )
+        elif partial_swim:
+            if atnighttrue:
+                print(
+                    "Your suggested pool heater temperature "
+                    f"is {pool_temp_normal}{units} but {atnight}."
+                )
+            else:
+                print(
+                    "Your suggested pool heater temperature is "
+                    f"{pool_temp_normal}{units}, but I wouldn't"
+                    " recommend you to swim at this "
+                )
         else:
             print(
                 "Your suggested pool heater temperature is "
-                f"{pool_temp_normal}{units}, but I wouldn't"
-                " recommend you to swim at this "
+                f"{pool_temp_normal}{units}, there where no"
+                " weather concerns in your area."
             )
-    else:
-        print(
-            "Your suggested pool heater temperature is "
-            f"{pool_temp_normal}{units}, there where no"
-            " weather concerns in your area."
-        )
 
 
 if __name__ == "__main__":
