@@ -22,7 +22,6 @@ def main() -> None:
     time2: str = strftime("%H%M", localtime())  # get time
 
     swim_or_not: bool = False
-    pool_temp_normal: float = 29.0
 
     if city_name == "milton":
         city_name = "Oakville"
@@ -52,17 +51,7 @@ def main() -> None:
                 country_name,
                 api_key
             )
-        atnighttrue, atnight = calculate_temp(
-                time2,
-                units,
-                current_temp,
-                humidity,
-                feels_like,
-                feels_like_3_hour,
-                pool_temp_normal,
-                humidity_in_3_hour,
-                sunset_unix
-            )
+
     except TypeError as Err:
         print(f"Sorry something went wrong, error code: {Err}")
     except KeyError as Err:
@@ -82,34 +71,6 @@ def main() -> None:
                 f"be {humidity_in_3_hour}."
             )
         )
-
-        if swim_or_not:
-            print(
-                (
-                    "I cannot give you a temperature to set your pool"
-                    " heater at because of dangerous weather concerns "
-                    f"in your area. The weather concern is {warning}."
-                )
-            )
-        elif partial_swim:
-            if atnighttrue:
-                print(
-                    "Your suggested pool heater temperature "
-                    f"is {pool_temp_normal}{units} but {atnight}."
-                )
-            else:
-                print(
-                    "Your suggested pool heater temperature is "
-                    f"{pool_temp_normal}{units}, but I wouldn't"
-                    " recommend you to swim at this "
-                )
-        else:
-            print(
-                "Your suggested pool heater temperature is "
-                f"{pool_temp_normal}{units}, there where no"
-                " weather concerns in your area."
-            )
-
 
 if __name__ == "__main__":
     main()
